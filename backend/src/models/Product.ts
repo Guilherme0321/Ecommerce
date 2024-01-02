@@ -1,3 +1,5 @@
+import { Variant } from "./Variant";
+
 // Produto
 export type Product = {
     product_id: string | number,
@@ -8,10 +10,4 @@ export type Product = {
     stock: number,                // Estoque disponível
     categories: string[],         // Categorias ou tags relacionadas
     variants?: Variant[],         // Informações sobre variantes (por exemplo, tamanhos, cores)
-};
-
-// Variante do Produto
-export type Variant = {
-    size?: string,                // Tamanho da variante
-    color?: string,               // Cor da variante
 };

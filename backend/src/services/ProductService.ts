@@ -1,8 +1,8 @@
 import { PoolClient, Pool, QueryResult } from "pg";
 import { Product } from "../models/Product";
-import db_config from "./dbconfig";
+import dbConfig from "./dbconfig";
 
-class ProductService {
+export class ProductService {
 
     private pool: Pool;
 
@@ -30,8 +30,8 @@ class ProductService {
      * @param productId - O ID do produto a ser recuperado.
      * @returns Promise<Product> Um objeto do tipo Product correspondente ao ID fornecido.
      */
-    public async getProductById (userId: number | string): Promise<Product> {
-        return (await this.executeQuery('SELECT * FROM products WHERE product_id = $1', [userId])).rows[0];
+    public async getProductById (product_id: number | string): Promise<Product> {
+        return (await this.executeQuery('SELECT name, description, images, price, stock, categories FROM products WHERE product_id = $1', [product_id])).rows[0];
     }
     /**
      * Atualiza as informações de um produto específico com base no ID fornecido na tabela "products" no banco de dados.
@@ -66,7 +66,3 @@ class ProductService {
         ])).rowCount !== 0;
     }
 }
-
-const productService: ProductService = new ProductService(db_config);
-export default productService;
-

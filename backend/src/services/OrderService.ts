@@ -1,8 +1,7 @@
 import { Pool, PoolClient, QueryResult } from "pg";
 import { Order } from "../models/Order";
-import db_config from "./dbconfig";
 
-class OrderService {
+export class OrderService {
 
     private pool: Pool;
 
@@ -30,8 +29,8 @@ class OrderService {
      * @param OrderId - O ID do produto a ser recuperado.
      * @returns Promise<Order> Um objeto do tipo Order correspondente ao ID fornecido.
      */
-    public async getOrderById (userId: number | string): Promise<Order> {
-        return (await this.executeQuery('SELECT * FROM orders WHERE order_id = $1', [userId])).rows[0];
+    public async getOrderByUserId (userId: number | string): Promise<Order[]> {
+        return (await this.executeQuery('SELECT * FROM orders WHERE customer_id = $1', [userId])).rows.flat();
     }
     /**
      * Atualiza as informações de um produto específico com base no ID fornecido na tabela "orders" no banco de dados.
@@ -42,7 +41,7 @@ class OrderService {
     public async updateOrderById (OrderId: number | string, newOrder: Partial<Order>): Promise<boolean> {
         return (await this.executeQuery(`UPDATE orders set customer_id = $1, shipping_address = $2, status = $3 WHERE order_id = $4`,
         [
-            newOrder.customer_id?.user_id, newOrder.shipping_address, newOrder.status, OrderId
+            newOrder.customer_id, newOrder.shipping_address, newOrder.status, OrderId
         ])).rowCount !== 0;
     }
     /**
@@ -63,10 +62,7 @@ class OrderService {
         INSERT INTO orders (customer_id, shipping_address, status)
         VALUES ($1, $2, $3)`, 
         [
-            order.customer_id?.user_id, order.shipping_address, order.status,
+            order.customer_id, order.shipping_address, order.status,
         ])).rowCount !== 0;
     }
 }
-
-const orderService: OrderService = new OrderService(db_config);
-export default orderService;

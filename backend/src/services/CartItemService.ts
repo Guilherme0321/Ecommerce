@@ -1,14 +1,14 @@
 import { CartItem } from "../models/CartItem";
 import { Pool, PoolClient, QueryResult } from 'pg';
-import db_config from "./dbconfig";
-import { Product } from "../models/Product";
+import { ProductService } from "./ProductService";
 
-class CartItemService {
-
+export class CartItemService {
+    private productService: ProductService;
     private pool: Pool;
 
     constructor(dbconfig: any){
         this.pool = new Pool(dbconfig);
+        this.productService = new ProductService(dbconfig);
     }
     private async executeQuery(query: string, values?: any[]): Promise<QueryResult> {
         let client: PoolClient | undefined;
@@ -19,20 +19,31 @@ class CartItemService {
             if (client) client.release();
         }
     }
+    private setProduct = async (cartItem: CartItem[]): Promise<CartItem[]> => {
+
+        if(cartItem === undefined){
+            return cartItem;
+        }
+        
+        await Promise.all(cartItem.map(async (cart) => {
+            cart.product = (await this.productService.getProductById(cart.product_id));            
+        }));
+        return cartItem.flat();
+    }
     /**
      * Recupera todos os produtos da tabela "cartItems" no banco de dados.
      * @returns Promise<CartItem[]> Um array de objetos do tipo CartItem.
      */
     public async getAllCartItems (): Promise<CartItem[]> {
-        return (await this.executeQuery('SELECT * FROM cart_items', [])).rows.flat();
+        return this.setProduct((await this.executeQuery('SELECT * FROM cart_items', [])).rows.flat());
     }
     /**
      * Recupera um produto específico com base no ID fornecido da tabela "cartItems" no banco de dados.
      * @param CartItemId - O ID do produto a ser recuperado.
      * @returns Promise<CartItem> Um objeto do tipo CartItem correspondente ao ID fornecido.
      */
-    public async getCartItemById (userId: number | string): Promise<CartItem> {
-        return (await this.executeQuery('SELECT * FROM cart_items WHERE cart_item_id = $1', [userId])).rows[0];
+    public async getCartItemByUserId (userId: number | string): Promise<CartItem[]> {
+        return this.setProduct((await this.executeQuery('SELECT * FROM cart_items WHERE user_id = $1', [userId])).rows.flat());
     }
     /**
      * Atualiza as informações de um produto específico com base no ID fornecido na tabela "cartItems" no banco de dados.
@@ -43,7 +54,7 @@ class CartItemService {
     public async updateCartItemById (CartItemId: number | string, newCartItem: Partial<CartItem>): Promise<boolean> {
         return (await this.executeQuery(`UPDATE cart_items set user_id = $1, product_id = $2, quantity = $3 WHERE cart_item_id = $4`,
         [
-            newCartItem.user_id, newCartItem.product?.product_id, newCartItem.quantity, CartItemId
+            newCartItem.user_id, newCartItem.product_id, newCartItem.quantity, CartItemId
         ])).rowCount !== 0;
     }
     /**
@@ -64,10 +75,7 @@ class CartItemService {
         INSERT INTO cart_items (user_id, product_id, quantity)
         VALUES ($1, $2, $3)`, 
         [
-            cartItem.user_id, cartItem.product?.product_id, cartItem.quantity,
+            cartItem.user_id, cartItem.product_id, cartItem.quantity,
         ])).rowCount !== 0;
     }
 }
-
-const cartItemsService: CartItemService = new CartItemService(db_config);
-export default cartItemsService;

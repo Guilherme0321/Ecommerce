@@ -1,16 +1,20 @@
 import { Pool, PoolClient, QueryResult } from "pg";
 import { User } from "../models/User";
-import db_config from "./dbconfig";
-
+import { OrderService } from "./OrderService";
+import { CartItemService } from "./CartItemService";
 // Agora você pode usar a constante db_config normalmente.
 
 
-class UserService {
+export class UserService {
 
     private pool: Pool;
+    private orderService: OrderService;
+    private cartService: CartItemService;
 
     constructor(dbconfig: any){
-        this.pool = new Pool(db_config);
+        this.pool = new Pool(dbconfig);
+        this.orderService = new OrderService(dbconfig);
+        this.cartService = new CartItemService(dbconfig);
     }
     private async executeQuery(query: string, values?: any[]): Promise<QueryResult> {
         let client: PoolClient | undefined;
@@ -21,20 +25,33 @@ class UserService {
             if (client) client.release();
         }
     }
+    private setOrders = async (users: User[]): Promise<User[]> => {
+        await Promise.all(users.map(async (user) => {
+            user.orders = await this.orderService.getOrderByUserId(user.user_id);
+        }))
+        return users;
+    }
+
+    private setCart_Items = async (users: User[]): Promise<User[]> => {
+        await Promise.all(users.map(async (user) => {
+            user.cart = await this.cartService.getCartItemByUserId(user.user_id);
+        }));
+        return users;
+    }
     /**
      * Recupera todos os usuários da tabela "users" no banco de dados.
      * @returns Promise<User[]> Um array de objetos do tipo User.
      */
     public async getAllUsers (): Promise<User[]> {
-        return (await this.executeQuery('SELECT * FROM users', [])).rows.flat();
+        return (await this.setCart_Items((await this.setOrders((await this.executeQuery('SELECT * FROM users', [])).rows.flat())).flat())).flat();
     }
     /**
      * Recupera um usuário específico com base no ID fornecido da tabela "users" no banco de dados.
      * @param userId - O ID do usuário a ser recuperado.
      * @returns Promise<User> Um objeto do tipo User correspondente ao ID fornecido.
      */
-    public async getUserById (userId: number | string): Promise<User> {
-        return (await this.executeQuery('SELECT * FROM users WHERE user_id = $1', [userId])).rows[0];
+    public async getUserById (userId: number | string): Promise<User[]> {
+        return  (await this.setCart_Items((await this.setOrders((await this.executeQuery('SELECT * FROM users WHERE user_id = $1', [userId])).rows.flat())).flat())).flat();;
     }
     /**
      * Atualiza as informações de um usuário específico com base no ID fornecido na tabela "users" no banco de dados.
@@ -77,7 +94,3 @@ class UserService {
         ])).rowCount !== 0;
     }
 }
-
-
-const userService: UserService = new UserService(db_config);
-export default userService;

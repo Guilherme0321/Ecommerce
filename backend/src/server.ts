@@ -1,10 +1,12 @@
-import  express, {Request, Response} from "express";
+import express from 'express';
+import { Routes } from './routes';
 
-const app = express();      
-const port = 5000;
+const app = express();
+const PORT = 5000;
 
 app.use(express.json());
+app.use('/', Routes);
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta http://localhost:5000`);
 });

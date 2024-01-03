@@ -1,3 +1,4 @@
+import { User } from "../models/User";
 import { UserService } from "../services/UserService";
 import { Request, Response } from "express";
 
@@ -10,19 +11,21 @@ export class UserController {
 
     }
 
-    private justNum = (x: string): boolean => {
-        return /^[0-9]+$/.test(x);;
-    }
-
     getAllUsers = async (req: Request, res: Response) => {
-        res.json( await this.userService.getAllUsers() );
+        const users: User[] = ( await this.userService.getAllUsers() );
+        if(users.length > 0){
+            res.json(users);
+        }else{
+            res.json({error: 'Nenhum usuário cadastrado!'})
+        }
     };
 
-    getUserById = async (req: Request, res: Response) => {
-        if(this.justNum(req.params.id)){
-            res.json(await this.userService.getUserById(req.params.id));
+    getUserById = async (req: Request, res: Response) => {   
+        const user:User[] = await this.userService.getUserById(req.params.id)
+        if(user.length > 0){
+            res.json(user);
         }else{
-            res.json({error: 'Somente números'})
+            res.json({error: 'Esse usuário não existe!'})
         }
     }
 }

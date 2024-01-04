@@ -1,13 +1,15 @@
 import { PoolClient, Pool, QueryResult } from "pg";
 import { Product } from "../models/Product";
-import dbConfig from "./dbconfig";
+import { VariantService } from "./VariantService";
 
 export class ProductService {
 
     private pool: Pool;
+    private variantService: VariantService;
 
     constructor(dbconfig: any){
         this.pool = new Pool(dbconfig);
+        this.variantService = new VariantService(dbconfig)
     }
     private async executeQuery(query: string, values?: any[]): Promise<QueryResult> {
         let client: PoolClient | undefined;
@@ -18,20 +20,30 @@ export class ProductService {
             if (client) client.release();
         }
     }
+
+    private async setVariants(products: Product[]): Promise<Product[]> {
+        await Promise.all(products.map(async product => {
+            product.variants = (await this.variantService.getVariantByProductId(product.product_id)).map(variant => {
+                const { variant_id, ...newVariant } = variant;
+                return newVariant;
+            });
+        }))
+        return products.flat()
+    }
     /**
      * Recupera todos os produtos da tabela "products" no banco de dados.
      * @returns Promise<Product[]> Um array de objetos do tipo Product.
      */
     public async getAllProducts (): Promise<Product[]> {
-        return (await this.executeQuery('SELECT * FROM products', [])).rows.flat();
+        return this.setVariants((await this.executeQuery('SELECT * FROM products', [])).rows.flat());
     }
     /**
      * Recupera um produto específico com base no ID fornecido da tabela "products" no banco de dados.
      * @param productId - O ID do produto a ser recuperado.
      * @returns Promise<Product> Um objeto do tipo Product correspondente ao ID fornecido.
      */
-    public async getProductById (product_id: number | string): Promise<Product> {
-        return (await this.executeQuery('SELECT name, description, images, price, stock, categories FROM products WHERE product_id = $1', [product_id])).rows[0];
+    public async getProductById (product_id: number | string): Promise<Product[]> {
+        return this.setVariants((await this.executeQuery('SELECT * FROM products WHERE product_id = $1', [product_id])).rows.flat());
     }
     /**
      * Atualiza as informações de um produto específico com base no ID fornecido na tabela "products" no banco de dados.

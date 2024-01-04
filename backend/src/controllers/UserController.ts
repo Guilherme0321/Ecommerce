@@ -14,18 +14,46 @@ export class UserController {
     getAllUsers = async (req: Request, res: Response) => {
         const users: User[] = ( await this.userService.getAllUsers() );
         if(users.length > 0){
-            res.json(users);
+            
+            res.json(users.map(({ user_id, password, ...user }) => user));
         }else{
             res.json({error: 'Nenhum usuário cadastrado!'})
         }
     };
 
     getUserById = async (req: Request, res: Response) => {   
-        const user:User[] = await this.userService.getUserById(req.params.id)
+        const user:User[] = await this.userService.getUserById(req.params.id);
         if(user.length > 0){
-            res.json(user);
+            res.json(user.map(({ user_id, password, ...user }) => user));
         }else{
-            res.json({error: 'Esse usuário não existe!'})
+            res.json({error: 'Esse usuário não existe!'});
+        }
+    }
+
+    deleteUserById = async (req: Request, res: Response) => {
+        const deletedUser: boolean = await this.userService.deleteUserById(req.params.id);
+        if(deletedUser){
+            res.json({ok: true})
+        }else{
+            res.json({error: 'Usuário não encontrado, ou não existe!'});
+        }
+    }
+
+    insertUser = async (req: Request, res: Response) => {
+        const insertedUser: boolean = await this.userService.insertUser(req.query);
+        if(insertedUser){
+            res.json({ok: true});
+        }else{
+            res.json({error: 'Não foi possivel inserir esse usuário!'});
+        }
+    }
+
+    updateUserById = async (req: Request, res: Response) => {
+        const updatedUser: boolean = await this.userService.updateUserById(req.params.id, req.query);
+        if(updatedUser){
+            res.json({ok: true});
+        }else{
+            res.json({error: 'Não foi possivel atualizar esse usuário!'});
         }
     }
 }

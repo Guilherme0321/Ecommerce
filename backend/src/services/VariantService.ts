@@ -1,16 +1,15 @@
 import { Pool, PoolClient, QueryResult } from "pg";
-import db_config from "./dbconfig";
 import { Variant } from "../models/Variant";
 
 // Agora você pode usar a constante db_config normalmente.
 
 
-class VariantService {
+export class VariantService {
 
     private pool: Pool;
 
     constructor(dbconfig: any){
-        this.pool = new Pool(db_config);
+        this.pool = new Pool(dbconfig);
     }
     private async executeQuery(query: string, values?: any[]): Promise<QueryResult> {
         let client: PoolClient | undefined;
@@ -33,8 +32,8 @@ class VariantService {
      * @param variant_id - O ID do usuário a ser recuperado.
      * @returns Promise<Variant> Um objeto do tipo Variant correspondente ao ID fornecido.
      */
-    public async getVariantById (product_id: number | string): Promise<Variant> {
-        return (await this.executeQuery('SELECT * FROM variants WHERE product_id = $1', [product_id])).rows[0];
+    public async getVariantByProductId (product_id: number | string): Promise<Variant[]> {
+        return (await this.executeQuery('SELECT * FROM variants WHERE product_id = $1', [product_id])).rows.flat();
     }
     /**
      * Atualiza as informações de um usuário específico com base no ID fornecido na tabela "variants" no banco de dados.
@@ -74,5 +73,3 @@ class VariantService {
     }
 }
 
-const variantService: VariantService = new VariantService(db_config);
-export default variantService;

@@ -12,6 +12,6 @@ export type User = {
     username: string;         // Nome de usuário
     password: string;         // Senha segura
     orders?: Order[];              // Histórico de pedidos
-    wishlist?: Product[];          // Lista de desejos
+    //wishlist?: Product[];          // Lista de desejos : adidcionar futuramente
     cart?: CartItem[];             // Carrinho de compras
 };

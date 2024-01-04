@@ -26,7 +26,10 @@ export class CartItemService {
         }
         
         await Promise.all(cartItem.map(async (cart) => {
-            cart.product = (await this.productService.getProductById(cart.product_id));            
+            if(cart.product_id !== undefined){
+                cart.product = (await this.productService.getProductById(cart.product_id))[0];
+                delete cart.product_id; // qualquer erro relacionado ao produto retirar isso
+            }
         }));
         return cartItem.flat();
     }

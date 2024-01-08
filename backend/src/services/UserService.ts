@@ -38,6 +38,14 @@ export class UserService {
         }));
         return users;
     }
+    public async validUserName(username: string): Promise<boolean> {
+        const result = (await this.executeQuery('SELECT COUNT(username) FROM users WHERE username = $1', [username]));        
+        return result.rows[0].count == 0;
+    }
+    public async validUser(username: string, password: string): Promise<undefined | User> {
+        const id = (await this.executeQuery('SELECT user_id FROM users WHERE username = $1 AND password = $2',[username, password])).rows[0];
+        return (id !== undefined) ? (await this.getUserById(id.user_id))[0] : undefined;
+    }
     /**
      * Recupera todos os usuários da tabela "users" no banco de dados.
      * @returns Promise<User[]> Um array de objetos do tipo User.

@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import { authAddress, authEmail, authName, isJustNumbers } from "../utils/utils";
+import { UserService } from "../services/UserService";
+import dbConfig from "../services/dbconfig";
+
+const userService: UserService = new UserService(dbConfig);
 
 export const authId = (req: Request, res: Response, next: NextFunction) => {
     if(!req.params.id){
@@ -11,16 +15,41 @@ export const authId = (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export const authUserQuery = (req: Request, res: Response, next: NextFunction) => {
+export const authUserName = async (req: Request, res: Response) => {
+    if(req.query.username !== undefined){
+        if(await userService.validUserName(req.query.username?.toString())){
+            res.json({ok: true});
+        }else{
+            res.json({error: `${req.query.username} já existe!`});
+        }
+    }else {
+        res.json({error: 'UserName é nulo!'});
+    }
+}
+
+export const authUser = async (req: Request, res: Response) => {
+    if(req.query.username !== undefined && req.query.password !== undefined){
+        const user = await userService.validUser(req.query.username.toString(), req.query.password.toString());
+        if(user !== undefined){
+            res.json(user);
+        }else{
+            res.json({error: `Nome de usuário ou senha são invalidos!`});
+        }
+    }else {
+        res.json({error: 'Nome de usuario ou senha são nulo!'});
+    }
+}
+
+export const authUserQuery = async (req: Request, res: Response, next: NextFunction) => {
     if(req.query.name !== undefined && req.query.address !== undefined && req.query.email !== undefined && req.query.username !== undefined && req.query.password !== undefined){
-        if(authAddress(req.query.address.toString().split(',')) && authEmail(req.query.email.toString()) && authName(req.query.name.toString())){
+        if(authAddress(req.query.address.toString().split(',')) && authEmail(req.query.email.toString()) && authName(req.query.name.toString()) && await userService.validUserName(req.query.username.toString())){
             next();
         }else{
             res.json({error: 'User invalido!'})
         }
 
     }else {
-        res.json({error: 'Os atributos "name", "email", "address", "username", "password" não podem ser nulos!'})
+        res.json({error: 'Os atributos "name", "email", "address", "username", "password" não podem ser nulos e "username" não pode se repetir!'})
     }
 }
 

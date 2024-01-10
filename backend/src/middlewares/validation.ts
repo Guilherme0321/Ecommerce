@@ -7,7 +7,7 @@ const userService: UserService = new UserService(dbConfig);
 
 export const authId = (req: Request, res: Response, next: NextFunction) => {
     if(!req.params.id){
-        res.json({error: 'Nenhum parametro <id> foi passado em ...user/<id>'})
+        res.json({error: 'Nenhum parametro <id> foi passado em ...user'})
     } else if(isJustNumbers(req.params.id)){
         next();
     }else{
@@ -20,10 +20,22 @@ export const authUserName = async (req: Request, res: Response) => {
         if(await userService.validUserName(req.body.username?.toString())){
             res.json({ok: true});
         }else{
-            res.json({error: `${req.body.username} já existe!`});
+            res.json({ok: false, error: `${req.body.username} já existe!`});
         }
     }else {
         res.json({error: 'UserName é nulo!'});
+    }
+}
+
+export const authUserEmail = async (req: Request, res: Response) => {
+    if(req.body.email !== undefined){        
+        if(await userService.validEmail(req.body.email?.toString())){
+            res.json({ok: true});
+        }else{
+            res.json({ok: false, error: `${req.body.email} já existe!`});
+        }
+    }else {
+        res.json({error: 'Email é nulo!'});
     }
 }
 
@@ -46,11 +58,13 @@ export const authUserQuery = async (req: Request, res: Response, next: NextFunct
         const isValidEmail: boolean = authEmail(req.body.email.toString());
         const isValidName: boolean = authName(req.body.name.toString());
         const isValidUsername: boolean = await userService.validUserName(req.body.username.toString());
+        const isUniqueEmail: boolean = await userService.validEmail(req.body.email.toString());
 
         if(!isValidAddress) res.json({error:'Endereço invalido!', details:'O endereço deve ser Rua, Número, Cidade'});
         else if(!isValidEmail) res.json({error:'Email invalido!'});
         else if(!isValidName) res.json({error:'Nome invalido!', details:'Não pode haver números no nome!'});
-        else if(!isValidUsername) res.json({error:'Já existe um usuário com esse username!'})
+        else if(!isValidUsername) res.json({error:'Já existe um usuário com esse username!'});
+        else if(!isUniqueEmail) res.json({error:'Já existe um usuário com esse email!'});
         else next();
         
 

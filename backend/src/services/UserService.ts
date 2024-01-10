@@ -38,6 +38,10 @@ export class UserService {
         }));
         return users;
     }
+    public async validEmail(email: string): Promise<boolean> {
+        const result = (await this.executeQuery('SELECT COUNT(email) FROM users WHERE email = $1', [email]));        
+        return result.rows[0].count == 0;
+    }
     public async validUserName(username: string): Promise<boolean> {
         const result = (await this.executeQuery('SELECT COUNT(username) FROM users WHERE username = $1', [username]));        
         return result.rows[0].count == 0;

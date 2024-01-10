@@ -40,7 +40,7 @@ export class UserController {
     }
 
     insertUser = async (req: Request, res: Response) => {
-        const insertedUser: boolean = await this.userService.insertUser(req.query);
+        const insertedUser: boolean = await this.userService.insertUser(req.body);
         if(insertedUser){
             res.json({ok: true});
         }else{
@@ -49,7 +49,7 @@ export class UserController {
     }
 
     updateUserById = async (req: Request, res: Response) => {
-        const updatedUser: boolean = await this.userService.updateUserById(req.params.id, req.query);
+        const updatedUser: boolean = await this.userService.updateUserById(req.params.id, req.body);
         if(updatedUser){
             res.json({ok: true});
         }else{

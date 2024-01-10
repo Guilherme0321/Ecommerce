@@ -16,11 +16,11 @@ export const authId = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const authUserName = async (req: Request, res: Response) => {
-    if(req.query.username !== undefined){
-        if(await userService.validUserName(req.query.username?.toString())){
+    if(req.body.username !== undefined){
+        if(await userService.validUserName(req.body.username?.toString())){
             res.json({ok: true});
         }else{
-            res.json({error: `${req.query.username} já existe!`});
+            res.json({error: `${req.body.username} já existe!`});
         }
     }else {
         res.json({error: 'UserName é nulo!'});
@@ -28,8 +28,8 @@ export const authUserName = async (req: Request, res: Response) => {
 }
 
 export const authUser = async (req: Request, res: Response) => {
-    if(req.query.username !== undefined && req.query.password !== undefined){
-        const user = await userService.validUser(req.query.username.toString(), req.query.password.toString());
+    if(req.body.username !== undefined && req.body.password !== undefined){
+        const user = await userService.validUser(req.body.username.toString(), req.body.password.toString());
         if(user !== undefined){
             res.json(user);
         }else{
@@ -41,12 +41,18 @@ export const authUser = async (req: Request, res: Response) => {
 }
 
 export const authUserQuery = async (req: Request, res: Response, next: NextFunction) => {
-    if(req.query.name !== undefined && req.query.address !== undefined && req.query.email !== undefined && req.query.username !== undefined && req.query.password !== undefined){
-        if(authAddress(req.query.address.toString().split(',')) && authEmail(req.query.email.toString()) && authName(req.query.name.toString()) && await userService.validUserName(req.query.username.toString())){
-            next();
-        }else{
-            res.json({error: 'User invalido!'})
-        }
+    if(req.body.name !== undefined && req.body.address !== undefined && req.body.email !== undefined && req.body.username !== undefined && req.body.password !== undefined){
+        const isValidAddress: boolean = authAddress(req.body.address.toString().split(','));
+        const isValidEmail: boolean = authEmail(req.body.email.toString());
+        const isValidName: boolean = authName(req.body.name.toString());
+        const isValidUsername: boolean = await userService.validUserName(req.body.username.toString());
+
+        if(!isValidAddress) res.json({error:'Endereço invalido!', details:'O endereço deve ser Rua, Número, Cidade'});
+        else if(!isValidEmail) res.json({error:'Email invalido!'});
+        else if(!isValidName) res.json({error:'Nome invalido!', details:'Não pode haver números no nome!'});
+        else if(!isValidUsername) res.json({error:'Já existe um usuário com esse username!'})
+        else next();
+        
 
     }else {
         res.json({error: 'Os atributos "name", "email", "address", "username", "password" não podem ser nulos e "username" não pode se repetir!'})
@@ -54,13 +60,13 @@ export const authUserQuery = async (req: Request, res: Response, next: NextFunct
 }
 
 export const authProductQuery = (req: Request, res: Response, next: NextFunction) => {
-    if(req.query.name !== undefined && req.query.description !== undefined && req.query.images !== undefined && req.query.price !== undefined && req.query.stock !== undefined && req.query.categories !== undefined){
-            const isValidName: boolean =             authName(req.query.name.toString());
-            const isValidDescription: boolean =      req.query.description.toString().length >= 50;
-            const isValidImages: boolean =           req.query.images.toString().split(',').length > 0;
-            const isValidPrice: boolean =            parseFloat(req.query.price.toString()) > 0;
-            const isValidCategories: boolean =       req.query.categories.toString().split(',').length > 0;            
-            const isValidStock: boolean =            parseInt(req.query.stock.toString()) >= 0;
+    if(req.body.name !== undefined && req.body.description !== undefined && req.body.images !== undefined && req.body.price !== undefined && req.body.stock !== undefined && req.body.categories !== undefined){
+            const isValidName: boolean =             authName(req.body.name.toString());
+            const isValidDescription: boolean =      req.body.description.toString().length >= 50;
+            const isValidImages: boolean =           req.body.images.toString().split(',').length > 0;
+            const isValidPrice: boolean =            parseFloat(req.body.price.toString()) > 0;
+            const isValidCategories: boolean =       req.body.categories.toString().split(',').length > 0;            
+            const isValidStock: boolean =            parseInt(req.body.stock.toString()) >= 0;
             if(!isValidName) res.json({
                 error: `Nome invalido!`,
                 details: 'Nome deve ter apenas letras!'

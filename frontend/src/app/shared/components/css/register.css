@@ -1,0 +1,15 @@
+.input-user {
+    outline: none;
+}
+
+label.input-label {
+    position: absolute;
+    left: 5px;
+    transition: .5s;
+}
+
+.input-user:focus ~ .input-label,
+.input-user:valid ~ .input-label{
+    transform: translateY(-100%);
+    font-size: 75%;
+}

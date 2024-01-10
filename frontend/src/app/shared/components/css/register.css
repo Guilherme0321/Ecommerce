@@ -1,5 +1,7 @@
 .input-user {
     outline: none;
+    width: 100% !important;
+    box-shadow: none !important;
 }
 
 label.input-label {
@@ -10,6 +12,6 @@ label.input-label {
 
 .input-user:focus ~ .input-label,
 .input-user:valid ~ .input-label{
-    transform: translateY(-100%);
+    transform: translateY(-2vh);
     font-size: 75%;
 }

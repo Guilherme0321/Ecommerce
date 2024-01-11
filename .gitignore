@@ -2,10 +2,8 @@
 node_modules/
 
 # Ignore TypeScript configuration files
-tsconfig.json
-tsconfig.*.json
-package.json
-package-lock.json
+
+
 dist
 
 /node_modules

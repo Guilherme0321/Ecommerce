@@ -6,9 +6,10 @@ import dbConfig from "../services/dbconfig";
 const userService: UserService = new UserService(dbConfig);
 
 export const authId = (req: Request, res: Response, next: NextFunction) => {
-    if(!req.params.id){
+    const { id } = req.body;
+    if(!id){
         res.json({error: 'Nenhum parametro <id> foi passado em ...user'})
-    } else if(isJustNumbers(req.params.id)){
+    } else if(isJustNumbers(id)){
         next();
     }else{
         res.status(422).json({ errors: 'Somente números!' });
@@ -16,11 +17,12 @@ export const authId = (req: Request, res: Response, next: NextFunction) => {
 }
 
 export const authUserName = async (req: Request, res: Response) => {
-    if(req.body.username !== undefined){
-        if(await userService.validUserName(req.body.username?.toString())){
+    const { username } = req.body;
+    if(username !== undefined){
+        if(await userService.validUserName(username?.toString())){
             res.json({ok: true});
         }else{
-            res.json({ok: false, error: `${req.body.username} já existe!`});
+            res.json({ok: false, error: `${username} já existe!`});
         }
     }else {
         res.json({error: 'UserName é nulo!'});
@@ -28,11 +30,12 @@ export const authUserName = async (req: Request, res: Response) => {
 }
 
 export const authUserEmail = async (req: Request, res: Response) => {
-    if(req.body.email !== undefined){        
-        if(await userService.validEmail(req.body.email?.toString())){
+    const { email } = req.body;
+    if(email !== undefined){        
+        if(await userService.validEmail(email?.toString())){
             res.json({ok: true});
         }else{
-            res.json({ok: false, error: `${req.body.email} já existe!`});
+            res.json({ok: false, error: `${email} já existe!`});
         }
     }else {
         res.json({error: 'Email é nulo!'});
@@ -40,8 +43,9 @@ export const authUserEmail = async (req: Request, res: Response) => {
 }
 
 export const authUser = async (req: Request, res: Response) => {
-    if(req.body.username !== undefined && req.body.password !== undefined){
-        const user = await userService.validUser(req.body.username.toString(), req.body.password.toString());
+    const { username, password } = req.body;
+    if(username !== undefined && password !== undefined){
+        const user = await userService.validUser(username.toString(), password.toString());
         if(user !== undefined){
             res.json(user);
         }else{
@@ -53,12 +57,13 @@ export const authUser = async (req: Request, res: Response) => {
 }
 
 export const authUserQuery = async (req: Request, res: Response, next: NextFunction) => {
-    if(req.body.name !== undefined && req.body.address !== undefined && req.body.email !== undefined && req.body.username !== undefined && req.body.password !== undefined){
-        const isValidAddress: boolean = authAddress(req.body.address.toString().split(','));
-        const isValidEmail: boolean = authEmail(req.body.email.toString());
-        const isValidName: boolean = authName(req.body.name.toString());
-        const isValidUsername: boolean = await userService.validUserName(req.body.username.toString());
-        const isUniqueEmail: boolean = await userService.validEmail(req.body.email.toString());
+    const { name, address, email, username, password } = req.body;
+    if(name !== undefined && address !== undefined && email !== undefined && username !== undefined && password !== undefined){
+        const isValidAddress: boolean = authAddress(address.toString().split(','));
+        const isValidEmail: boolean = authEmail(email.toString());
+        const isValidName: boolean = authName(name.toString());
+        const isValidUsername: boolean = await userService.validUserName(username.toString());
+        const isUniqueEmail: boolean = await userService.validEmail(email.toString());
 
         if(!isValidAddress) res.json({error:'Endereço invalido!', details:'O endereço deve ser Rua, Número, Cidade'});
         else if(!isValidEmail) res.json({error:'Email invalido!'});
@@ -74,13 +79,14 @@ export const authUserQuery = async (req: Request, res: Response, next: NextFunct
 }
 
 export const authProductQuery = (req: Request, res: Response, next: NextFunction) => {
-    if(req.body.name !== undefined && req.body.description !== undefined && req.body.images !== undefined && req.body.price !== undefined && req.body.stock !== undefined && req.body.categories !== undefined){
-            const isValidName: boolean =             authName(req.body.name.toString());
-            const isValidDescription: boolean =      req.body.description.toString().length >= 50;
-            const isValidImages: boolean =           req.body.images.toString().split(',').length > 0;
-            const isValidPrice: boolean =            parseFloat(req.body.price.toString()) > 0;
-            const isValidCategories: boolean =       req.body.categories.toString().split(',').length > 0;            
-            const isValidStock: boolean =            parseInt(req.body.stock.toString()) >= 0;
+    const { name, description, images, price, stock, categories } = req.body;
+    if(name !== undefined && description !== undefined && images !== undefined && price !== undefined && stock !== undefined && categories !== undefined){
+            const isValidName: boolean =             authName(name.toString());
+            const isValidDescription: boolean =      description.toString().length >= 50;
+            const isValidImages: boolean =           images.toString().split(',').length > 0;
+            const isValidPrice: boolean =            parseFloat(price.toString()) > 0;
+            const isValidCategories: boolean =       categories.toString().split(',').length > 0;            
+            const isValidStock: boolean =            parseInt(stock.toString()) >= 0;
             if(!isValidName) res.json({
                 error: `Nome invalido!`,
                 details: 'Nome deve ter apenas letras!'

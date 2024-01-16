@@ -6,9 +6,9 @@ export const Routes = () => {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path="/" Component={() => <Home />} />
+                <Route path="/home" Component={() => <Home />} />
                 <Route path="/register" Component={() => <Register />} />
-                <Route path="*" Component={() => <Navigate to="/" />} />
+                <Route path="*" Component={() => <Navigate to="/home" />} />
             </Switch>
         </BrowserRouter>
     );

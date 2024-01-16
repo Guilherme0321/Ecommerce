@@ -1,0 +1,6 @@
+.main {
+    background-image: url('../images/homeBackground.jpeg');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+/*     background-size: cover; */
+}

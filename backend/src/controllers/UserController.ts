@@ -22,7 +22,7 @@ export class UserController {
     };
 
     getUserById = async (req: Request, res: Response) => {   
-        const user:User[] = await this.userService.getUserById(req.body.id);
+        const user:User[] = await this.userService.getUserById(req.body.user_id);
         if(user.length > 0){
             res.json(user.map(({ user_id, password, ...user }) => user));
         }else{
@@ -31,7 +31,7 @@ export class UserController {
     }
 
     deleteUserById = async (req: Request, res: Response) => {
-        const deletedUser: boolean = await this.userService.deleteUserById(req.body.id);
+        const deletedUser: boolean = await this.userService.deleteUserById(req.body.user_id);
         if(deletedUser){
             res.json({ok: true})
         }else{
@@ -49,7 +49,7 @@ export class UserController {
     }
 
     updateUserById = async (req: Request, res: Response) => {
-        const updatedUser: boolean = await this.userService.updateUserById(req.body.id, req.body);
+        const updatedUser: boolean = await this.userService.updateUserById(req.body.user_id, req.body);
         if(updatedUser){
             res.json({ok: true});
         }else{

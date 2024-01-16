@@ -21,7 +21,7 @@ export class ProductController {
     };
 
     getProductById = async (req: Request, res: Response) => {   
-        const product:Product[] = await this.productService.getProductById(req.params.id);
+        const product:Product[] = await this.productService.getProductById(req.body.product_id);
         if(product.length > 0){
             res.json(product.map(({ product_id, ...product }) => product));
         }else{
@@ -30,7 +30,7 @@ export class ProductController {
     }
 
     deleteProductById = async (req: Request, res: Response) => {
-        const deletedProduct: boolean = await this.productService.deleteProductById(req.params.id);
+        const deletedProduct: boolean = await this.productService.deleteProductById(req.body.product_id);
         if(deletedProduct){
             res.json({ok: true})
         }else{
@@ -39,7 +39,7 @@ export class ProductController {
     }
 
     insertProduct = async (req: Request, res: Response) => {
-        const insertedProduct: boolean = await this.productService.insertProduct(req.query);
+        const insertedProduct: boolean = await this.productService.insertProduct(req.body);
         if(insertedProduct){
             res.json({ok: true});
         }else{
@@ -48,7 +48,7 @@ export class ProductController {
     }
 
     updateProductById = async (req: Request, res: Response) => {
-        const updatedProduct: boolean = await this.productService.updateProductById(req.params.id, req.query);
+        const updatedProduct: boolean = await this.productService.updateProductById(req.body.product_id, req.body);
         if(updatedProduct){
             res.json({ok: true});
         }else{

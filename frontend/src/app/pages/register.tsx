@@ -125,8 +125,8 @@ export const Register = () => {
             
             const res = await userService(user)
             console.log(res);
-            if (res.ok && formRef.current) {
-                formRef.current.submit();
+            if (res.ok) {
+                window.location.reload();
             }else {
                 console.error(res);
             }

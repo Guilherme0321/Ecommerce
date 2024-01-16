@@ -1,4 +1,4 @@
-import './css/register.css'
+import '../styles/register.css'
 
 export const Input = (
     { id, type, labelText, min, required, inputRef, callFuncion }:{

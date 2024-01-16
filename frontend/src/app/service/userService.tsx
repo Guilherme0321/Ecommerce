@@ -1,4 +1,4 @@
-import { User } from '../types/user'
+import { User } from '../shared/types/user'
 
 export const userService = async (user: User): Promise<any> => {
     const url: string = 'http://localhost:5000/user/insert'

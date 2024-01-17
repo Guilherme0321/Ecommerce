@@ -47,7 +47,8 @@ export const authUser = async (req: Request, res: Response) => {
     if(username !== undefined && password !== undefined){
         const user = await userService.validUser(username.toString(), password.toString());
         if(user !== undefined){
-            res.json(user);
+            const resp = {ok: true, ... user};
+            res.json(resp);
         }else{
             res.json({ok: false, error: `Nome de usuário ou senha são invalidos!`});
         }

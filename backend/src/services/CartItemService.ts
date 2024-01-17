@@ -65,8 +65,12 @@ export class CartItemService {
      * @param CartItemId - O ID do produto a ser excluído.
      * @returns Promise<boolean> Um booleano indicando se a exclusão foi bem-sucedida ou não.
      */
-    public async deleteCartItemById (CartItemId: number | string): Promise<boolean> {
-        return (await this.executeQuery('DELETE FROM cart_items WHERE cart_item_id = $1', [CartItemId])).rowCount !== 0;
+    public async deleteCartItemById (cartItem: CartItem): Promise<boolean> {        
+        return (await this.executeQuery(`DELETE FROM cart_items WHERE cart_item_id = ( 
+                SELECT cart_item_id FROM cart_items WHERE user_id = $1 AND product_id = $2 AND quantity = $3 LIMIT 1
+            )
+            
+            `, [cartItem.user_id, cartItem.product_id, cartItem.quantity])).rowCount !== 0;
     }
     /**
      * Insere um novo produto na tabela "cartItems" no banco de dados.

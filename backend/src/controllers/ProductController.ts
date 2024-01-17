@@ -14,7 +14,7 @@ export class ProductController {
     getAllProducts = async (req: Request, res: Response) => {
         const products: Product[] = ( await this.productService.getAllProducts() );
         if(products.length > 0){
-            res.json(products.map(({ product_id, ...product }) => product));
+            res.json(products);
         }else{
             res.json({error: 'Nenhum produto cadastrado!'})
         }
@@ -23,7 +23,7 @@ export class ProductController {
     getProductById = async (req: Request, res: Response) => {   
         const product:Product[] = await this.productService.getProductById(req.body.product_id);
         if(product.length > 0){
-            res.json(product.map(({ product_id, ...product }) => product));
+            res.json(product);
         }else{
             res.json({error: 'Esse produto não existe!'});
         }

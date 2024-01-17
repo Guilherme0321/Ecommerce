@@ -7,11 +7,14 @@ import { OrderService } from "./services/OrderService";
 import { authProductQuery } from "./middlewares/validationProduct";
 import { OrderController } from "./controllers/OrderController";
 import { isValidInsertionOrder, validOrderId } from "./middlewares/validationOrder";
+import { isValidCartItem } from "./middlewares/validationCartItem";
+import { CartItemController } from "./controllers/CartItemsController";
 
 export const Routes = Router();
 const usercontroller = new UserController(dbConfig);
 const productcontroller = new ProductController(dbConfig);
 const orderController = new OrderController(dbConfig);
+const cartItemsController = new CartItemController(dbConfig);
 
 Routes.get('/users', usercontroller.getAllUsers);
 Routes.get('/user/:id', authId, usercontroller.getUserById);
@@ -30,3 +33,6 @@ Routes.put('/product', authId, authProductQuery, productcontroller.updateProduct
 
 Routes.post('/orders', isValidInsertionOrder, orderController.insertOrder);
 Routes.delete('/orders', validOrderId, orderController.deleteOrderById);
+
+Routes.post('/cart-items', isValidCartItem, cartItemsController.insertCartItem);
+Routes.delete('/cart-items', isValidCartItem, cartItemsController.deleteCartItemById);

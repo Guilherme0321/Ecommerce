@@ -46,8 +46,8 @@ export class UserService {
         const result = (await this.executeQuery('SELECT COUNT(username) FROM users WHERE username = $1', [username]));        
         return result.rows[0].count == 0;
     }
-    public async validUser(username: string, password: string): Promise<undefined | User> {
-        return (username && password) ? (await this.executeQuery('SELECT * FROM users WHERE username = $1 AND password = $2',[username, password])).rows[0] : undefined;
+    public async validUser(username: string, password: string): Promise<User> {
+        return (await this.executeQuery('SELECT user_id FROM users WHERE username = $1 AND password = $2',[username, password])).rows[0];
     }
     /**
      * Recupera todos os usuários da tabela "users" no banco de dados.

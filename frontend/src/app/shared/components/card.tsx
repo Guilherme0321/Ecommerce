@@ -15,7 +15,7 @@ export const Card = (
     }
 ) => {
     let [quantity, setQuantity] = useState<number>(0);
-    const user_id = getCookie('user_id');
+    const token =  getCookie('token');
     return (
         <div className="d-flex flex-column justify-content-center g-3 align-items-center" style={{width: '25%'}} id="card">
             <img src={image} alt={name} className="img-thumbnail rounded-0"/>
@@ -34,7 +34,7 @@ export const Card = (
                         <p>{h}</p>
                     ))}
                 </div>
-                <button onClick={() => console.log({user_id: user_id, product_id: product_id, quantity: quantity})}>Add to cart</button>
+                <button onClick={() => console.log({product_id: product_id, quantity: quantity, token: token})}>Add to cart</button>
             </div>
         </div>
     )

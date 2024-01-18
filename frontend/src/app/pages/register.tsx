@@ -129,7 +129,7 @@ export const Register = () => {
             if (res.ok) {
                 console.log(res.user_id);
                 
-                setCookie('user_id', res.user_id, 1);
+                setCookie('token', res.token);
                 window.location.reload();
             }else {
                 console.error(res);

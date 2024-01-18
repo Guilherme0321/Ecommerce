@@ -41,7 +41,7 @@ export const Login = () => {
             tradeClassValidity(passwordRef, false);
         }else {
             tradeClassValidity(passwordRef, true);
-            setCookie('user_id', response.user_id, 1);
+            setCookie('token', response.token);
             window.location.reload();
             
         }

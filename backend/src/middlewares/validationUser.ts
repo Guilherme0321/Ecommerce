@@ -2,19 +2,35 @@ import { NextFunction, Request, Response } from "express"
 import { authAddress, authEmail, authName, isJustNumbers } from "../utils/utils";
 import { UserService } from "../services/UserService";
 import dbConfig from "../services/dbconfig";
+import * as jwt from 'jsonwebtoken';
 
 const userService: UserService = new UserService(dbConfig);
 
 export const authId = (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.body;
-    if(!id){
-        res.json({error: 'Nenhum parametro <id> foi passado em ...user'})
-    } else if(isJustNumbers(id)){
+    const { user_id } = req.body;
+    if(!user_id){
+        res.json({error: 'Nenhum parametro <user_id> foi passado em ...user'})
+    } else if(isJustNumbers(user_id)){
         next();
     }else{
         res.status(422).json({ errors: 'Somente números!' });
     }
 }
+
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.header('Authorization')?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Acesso não autorizado' });
+    try {
+        jwt.verify(token, 'user_id', (err, decoded) => {
+            req.body.user_id = decoded.user_id;
+            console.log(req.body.user_id);
+            
+            next();
+        });        
+    } catch (error) {
+        res.json({erro: 'Token inválido!'})
+    }
+};
 
 export const authUserName = async (req: Request, res: Response) => {
     const { username } = req.body;
@@ -44,11 +60,11 @@ export const authUserEmail = async (req: Request, res: Response) => {
 
 export const authUser = async (req: Request, res: Response) => {
     const { username, password } = req.body;
-    if(username !== undefined && password !== undefined){
+    if(username && password){
         const user = await userService.validUser(username.toString(), password.toString());
-        if(user !== undefined){
-            const resp = {ok: true, ... user};
-            res.json(resp);
+        if(user){
+            const token = jwt.sign({user_id: user.user_id}, 'user_id', {expiresIn: '1d'});            
+            res.json({ok: true, token});
         }else{
             res.json({ok: false, error: `Nome de usuário ou senha são invalidos!`});
         }

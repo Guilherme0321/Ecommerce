@@ -56,6 +56,9 @@ export class UserService {
     public async getAllUsers (): Promise<User[]> {
         return (await this.setCart_Items((await this.setOrders((await this.executeQuery('SELECT * FROM users', [])).rows.flat())).flat())).flat();
     }
+    public async getUserIdByUsername (username: string): Promise<number> {
+        return (await this.executeQuery('SELECT user_id FROM users WHERE username = $1',[username])).rows[0].user_id;
+    }
     /**
      * Recupera um usuário específico com base no ID fornecido da tabela "users" no banco de dados.
      * @param userId - O ID do usuário a ser recuperado.

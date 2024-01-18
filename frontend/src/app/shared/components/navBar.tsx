@@ -2,9 +2,10 @@ import { useState } from "react"
 import '../styles/nav.css'
 import IconUser from '../images/user-circle.svg'
 import { getCookie } from "./utils/cookies";
+import { logout } from "../../service/userService";
 export const NavBar = () => {
     const [displayNav, setDisplayNav] = useState('block');
-    const isAuthenticated = getCookie('user_id') !== null;
+    const isAuthenticated = getCookie('token') !== null;
 
     const changeDisplay = () => {
         setDisplayNav(displayNav === 'none' ? 'block' : 'none');
@@ -35,11 +36,20 @@ export const NavBar = () => {
                         {!isAuthenticated && <li className="nav-item px-1">
                             <a className="nav-link " href="register">Register</a>
                         </li>}
-                        {isAuthenticated && <li className="nav-item py-0">
-                            <a className="dropdown-toggle d-flex align-items-center py-0 mx-5" href="perfil" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        {isAuthenticated && <div className="dropstart">
+                            <button className="dropdown-toggle border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src={IconUser} className="rounded-circle" height="35" alt="" loading="lazy" />
-                            </a>
-                        </li>}
+                            </button>
+                            <ul className="dropdown-menu">
+                                <li><a className="dropdown-item" href="perfil">Perfil</a></li>
+                                <li><hr className="dropdown-divider" /></li>
+                                <li>
+                                    <a className="dropdown-item d-flex align-items-center" href="perfil">
+                                        <button className="bg-transparent border-0 mx-0 px-0 text-danger fw-bold" onClick={logout}>Logout</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>}
                     </ul>
                 </div>
             </div>

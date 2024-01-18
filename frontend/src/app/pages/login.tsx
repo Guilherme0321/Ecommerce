@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { NavBar } from "../shared/components/navBar"
 import { Input } from "../shared/components/custumInput";
 import { authenticateUser } from "../service/userService";
+import { setCookie } from "../shared/components/utils/cookies";
 
 export const Login = () => {
     const formRef = useRef<HTMLFormElement>(null);
@@ -39,7 +40,10 @@ export const Login = () => {
         if(response.ok === false) {
             tradeClassValidity(passwordRef, false);
         }else {
+            tradeClassValidity(passwordRef, true);
+            setCookie('user_id', response.user_id, 1);
             window.location.reload();
+            
         }
         
     }

@@ -6,16 +6,16 @@ import { getCookie } from "../shared/components/utils/cookies";
 import { Products } from "../pages/products";
 
 export const Routes = () => {
-    const isAuthenticated = getCookie('user_id');
-    console.log(isAuthenticated);
+    const token = getCookie('token')
+    console.log(token);
     
     return (
         <BrowserRouter>
             <Switch>
                 <Route path="/home" Component={() => <Home />} />
-                {isAuthenticated === null && <Route path="/register" Component={() => <Register />} />}
-                {isAuthenticated === null && <Route path="/login" Component={() => <Login />} />}
-                {isAuthenticated && <Route path="/products" Component={() => <Products />} />}
+                {!token && <Route path="/register" Component={() => <Register />} />}
+                {!token && <Route path="/login" Component={() => <Login />} />}
+                {token && <Route path="/products" Component={() => <Products />} />}
                 <Route path="*" Component={() => <Navigate to="/home" />} />
             </Switch>
         </BrowserRouter>

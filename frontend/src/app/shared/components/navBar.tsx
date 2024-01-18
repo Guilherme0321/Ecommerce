@@ -1,8 +1,10 @@
 import { useState } from "react"
 import '../styles/nav.css'
 import IconUser from '../images/user-circle.svg'
+import { getCookie } from "./utils/cookies";
 export const NavBar = () => {
     const [displayNav, setDisplayNav] = useState('block');
+    const isAuthenticated = getCookie('user_id') !== null;
 
     const changeDisplay = () => {
         setDisplayNav(displayNav === 'none' ? 'block' : 'none');
@@ -19,25 +21,25 @@ export const NavBar = () => {
                         <li className="nav-item px-1">
                             <a className="nav-link active" aria-current="page" href="home">Home</a>
                         </li>
-                        <li className="nav-item px-1">
+                        {isAuthenticated && <li className="nav-item px-1">
                             <a className="nav-link " href="products">Products</a>
-                        </li>
+                        </li>}
                         <li className="nav-item px-1">
                             <a className="nav-link " href="about">About</a>
                         </li>
                     </ul>
                     <ul className="navbar-nav ms-auto d-flex flex-row mt-3 mt-lg-0">
-                        <li className="nav-item px-1">
+                        {!isAuthenticated && <li className="nav-item px-1">
                            <a className="nav-link " href="login">Login</a>
-                        </li>
-                        <li className="nav-item px-1">
+                        </li>}
+                        {!isAuthenticated && <li className="nav-item px-1">
                             <a className="nav-link " href="register">Register</a>
-                        </li>
-                        <li className="nav-item py-0">
+                        </li>}
+                        {isAuthenticated && <li className="nav-item py-0">
                             <a className="dropdown-toggle d-flex align-items-center py-0 mx-5" href="perfil" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                                 <img src={IconUser} className="rounded-circle" height="35" alt="" loading="lazy" />
                             </a>
-                        </li>
+                        </li>}
                     </ul>
                 </div>
             </div>

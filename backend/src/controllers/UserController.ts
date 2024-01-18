@@ -41,8 +41,10 @@ export class UserController {
 
     insertUser = async (req: Request, res: Response) => {
         const insertedUser: boolean = await this.userService.insertUser(req.body);
+        const user_id: number = await this.userService.getUserIdByUsername(req.body.username);
+        
         if(insertedUser){
-            res.json({ok: true, user_id: req.body.user_id});
+            res.json({ok: true, user_id: user_id});
         }else{
             res.json({error: 'Não foi possivel inserir esse usuário!'});
         }

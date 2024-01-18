@@ -32,12 +32,32 @@ export const authenticateUser = async (user: Partial<User>): Promise<any> => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(user),
         });
         if(!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
         const response = await res.json();
+        return response;
+    } catch (error) {
+        console.error('Error in userService:', error);
+        return error;
+    }
+}
+
+export const logout = async () => {
+    const url: string = 'http://localhost:5000/user/logout';
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        if(!res.ok){
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        const response = await res.json();
+        console.log(response);
+        
         return response;
     } catch (error) {
         console.error('Error in userService:', error);

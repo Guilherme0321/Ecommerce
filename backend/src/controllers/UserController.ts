@@ -1,6 +1,9 @@
 import { User } from "../models/User";
 import { UserService } from "../services/UserService";
 import { Request, Response } from "express";
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+
 
 export class UserController {
 
@@ -9,6 +12,11 @@ export class UserController {
     constructor(db_config: any){
         this.userService = new UserService(db_config);
 
+    }
+
+    logout = (req: Request, res: Response) => {
+        res.clearCookie('token')
+        res.json({ ok: true, message: 'Logout bem-sucedido' });
     }
 
     getAllUsers = async (req: Request, res: Response) => {
@@ -40,11 +48,14 @@ export class UserController {
     }
 
     insertUser = async (req: Request, res: Response) => {
-        const insertedUser: boolean = await this.userService.insertUser(req.body);
-        const user_id: number = await this.userService.getUserIdByUsername(req.body.username);
+        const userData: User = req.body;
+        //userData.password = await bcrypt.hash(userData.password, 10);
+        const insertedUser: boolean = await this.userService.insertUser(userData);
         
+        const user_id: number = await this.userService.getUserIdByUsername(req.body.username);
         if(insertedUser){
-            res.json({ok: true, user_id: user_id});
+            const token = jwt.sign({user_id: user_id}, 'user_id', {expiresIn: '1d'});
+            res.json({ok: true, token});
         }else{
             res.json({error: 'Não foi possivel inserir esse usuário!'});
         }

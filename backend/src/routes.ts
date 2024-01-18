@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "./controllers/UserController";
 import dbConfig from "./services/dbconfig";
-import { authId, authUser, authUserName, authUserQuery, authUserEmail } from "./middlewares/validationUser";
+import { authId, authUser, authUserName, authUserQuery, authUserEmail, authenticateToken } from "./middlewares/validationUser";
 import { ProductController } from "./controllers/ProductController";
 import { OrderService } from "./services/OrderService";
 import { authProductQuery } from "./middlewares/validationProduct";
@@ -17,13 +17,14 @@ const orderController = new OrderController(dbConfig);
 const cartItemsController = new CartItemController(dbConfig);
 
 Routes.get('/users', usercontroller.getAllUsers);
-Routes.get('/user/:id', authId, usercontroller.getUserById);
-Routes.delete('/user/delete/:id', authId, usercontroller.deleteUserById);
-Routes.post('/user/insert/', authUserQuery, usercontroller.insertUser);
-Routes.put('/user/update/:id/', authId, authUserQuery, usercontroller.updateUserById);
+Routes.get('/user', authId, usercontroller.getUserById);
+Routes.delete('/user/delete', authId, usercontroller.deleteUserById);
+Routes.post('/user/insert', authUserQuery, usercontroller.insertUser);
+Routes.put('/user/update', authId, authUserQuery, usercontroller.updateUserById);
 Routes.post('/user/valid/username', authUserName);
 Routes.post('/user/authenticate', authUser);
 Routes.post('/user/valid/email', authUserEmail);
+Routes.post('/user/logout', usercontroller.logout);
 
 Routes.get('/products', productcontroller.getAllProducts);
 Routes.get('/product/:id', authId, productcontroller.getProductById);
@@ -34,5 +35,5 @@ Routes.put('/product', authId, authProductQuery, productcontroller.updateProduct
 Routes.post('/orders', isValidInsertionOrder, orderController.insertOrder);
 Routes.delete('/orders', validOrderId, orderController.deleteOrderById);
 
-Routes.post('/cart-items', isValidCartItem, cartItemsController.insertCartItem);
+Routes.post('/cart-items', authenticateToken, isValidCartItem, cartItemsController.insertCartItem);
 Routes.delete('/cart-items', isValidCartItem, cartItemsController.deleteCartItemById);

@@ -6,6 +6,7 @@ import { validUsername } from "../service/usernameIsUnique";
 import { authUser } from "../shared/components/utils/authUserInputs";
 import { validUserEmail } from "../service/userEmailisUnique";
 import { NavBar } from "../shared/components/navBar";
+import { setCookie } from "../shared/components/utils/cookies";
 export const Register = () => {
 
     const formRef = useRef<HTMLFormElement>(null);
@@ -126,6 +127,9 @@ export const Register = () => {
             const res = await userService(user)
             console.log(res);
             if (res.ok) {
+                console.log(res.user_id);
+                
+                setCookie('user_id', res.user_id, 1);
                 window.location.reload();
             }else {
                 console.error(res);

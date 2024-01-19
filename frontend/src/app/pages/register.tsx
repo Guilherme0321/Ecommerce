@@ -2,9 +2,9 @@ import { useRef, useState } from "react";
 import { Input } from "../shared/components/custumInput";
 import { StatusUser, User } from "../shared/types/user";
 import { userService } from "../service/userService";
-import { validUsername } from "../service/usernameIsUnique";
+import { validUsername } from "../service/userService";
 import { authUser } from "../shared/components/utils/authUserInputs";
-import { validUserEmail } from "../service/userEmailisUnique";
+import { validUserEmail } from "../service/userService";
 import { NavBar } from "../shared/components/navBar";
 import { setCookie } from "../shared/components/utils/cookies";
 export const Register = () => {

@@ -36,7 +36,7 @@ export const Products = () => {
     return (
         <>
             <NavBar />
-            <section className="d-flex flex-row flex-wrap justify-content-center m-5 gap-2 py-2">
+            <section className="row row-cols-1 row-cols-md-3 g-4 my-5">
                 {loading ? (
                     <h1>Loading</h1>
                 ) : (
@@ -48,7 +48,7 @@ export const Products = () => {
                         description={data.description}
                         price={data.price}
                         stock={data.stock}
-
+                        categories={data.categories}
                     />))
                 )}
             </section>

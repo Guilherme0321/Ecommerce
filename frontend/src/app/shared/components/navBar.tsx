@@ -1,23 +1,21 @@
-import { useState } from "react"
 import '../styles/nav.css'
 import IconUser from '../images/user-circle.svg'
 import { getCookie } from "./utils/cookies";
 import { logout } from "../../service/userService";
 export const NavBar = () => {
-    const [displayNav, setDisplayNav] = useState('block');
     const isAuthenticated = getCookie('token') !== null;
 
-    const changeDisplay = () => {
-        setDisplayNav(displayNav === 'none' ? 'block' : 'none');
-    };
+    const callLogout = () => {
+        logout();
+    }
     return (
         <nav className="navbar navbar-inverse fixed-top navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
                 <a className="navbar-brand" href="home">Pixel Purchases</a>
-                <button className="navbar-toggler" type="button" onClick={() => changeDisplay()} data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse mx-2" id="navbarNav" style={{display: displayNav}}>
+                <div className="collapse navbar-collapse mx-2" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item px-1">
                             <a className="nav-link active" aria-current="page" href="home">Home</a>
@@ -42,11 +40,12 @@ export const NavBar = () => {
                             </button>
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="perfil">Perfil</a></li>
+                                <li><a className="dropdown-item" href="perfil">Cart Items</a></li>
                                 <li><hr className="dropdown-divider" /></li>
                                 <li>
-                                    <a className="dropdown-item d-flex align-items-center" href="perfil">
-                                        <button className="bg-transparent border-0 mx-0 px-0 text-danger fw-bold" onClick={logout}>Logout</button>
-                                    </a>
+                                    <form className="dropdown-item d-flex align-items-center">
+                                        <button className="bg-transparent border-0 mx-0 px-0 text-danger fw-bold" onClick={callLogout}>Logout</button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>}

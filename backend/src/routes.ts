@@ -17,10 +17,10 @@ const orderController = new OrderController(dbConfig);
 const cartItemsController = new CartItemController(dbConfig);
 
 Routes.get('/users', usercontroller.getAllUsers);
-Routes.get('/user', authId, usercontroller.getUserById);
+Routes.get('/user', authenticateToken, usercontroller.getUserById);
 Routes.delete('/user/delete', authId, usercontroller.deleteUserById);
 Routes.post('/user/insert', authUserQuery, usercontroller.insertUser);
-Routes.put('/user/update', authId, authUserQuery, usercontroller.updateUserById);
+Routes.put('/user/update', authenticateToken, authUserQuery, usercontroller.updateUserById);
 Routes.post('/user/valid/username', authUserName);
 Routes.post('/user/authenticate', authUser);
 Routes.post('/user/valid/email', authUserEmail);

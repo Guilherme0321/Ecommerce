@@ -110,3 +110,25 @@ export const validUsername = async (username: string): Promise<any> => {
         return error;
     }
 }
+
+export const getInfoPerfil = async (token: string): Promise<any> => {
+    const url: string = 'http://localhost:5000/user';
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(!res.ok) {
+            throw Error(`HTTP error! Status: ${res.status}`);
+        }
+        const response = await res.json();
+        return response;
+    } catch (error) {
+        console.error('Error in userService:', error);
+        return error;
+    }
+}   

@@ -23,7 +23,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     try {
         jwt.verify(token, 'user_id', (err, decoded) => {
             req.body.user_id = decoded.user_id;
-            console.log(req.body.user_id);
             
             next();
         });        
@@ -64,7 +63,7 @@ export const authUser = async (req: Request, res: Response) => {
         const user = await userService.validUser(username.toString(), password.toString());
         if(user){
             const token = jwt.sign({user_id: user.user_id}, 'user_id', {expiresIn: '1d'});            
-            res.json({ok: true, token});
+            res.json({ok: true, token, username: req.body.username});
         }else{
             res.json({ok: false, error: `Nome de usuário ou senha são invalidos!`});
         }

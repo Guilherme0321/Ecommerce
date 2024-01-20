@@ -36,7 +36,7 @@ export const Products = () => {
     return (
         <>
             <NavBar />
-            <section className="row row-cols-1 row-cols-md-3 g-4 my-5">
+            <section className="row row-cols-1 row-cols-md-6 g-4 my-5 mx-5">
                 {loading ? (
                     <h1>Loading</h1>
                 ) : (

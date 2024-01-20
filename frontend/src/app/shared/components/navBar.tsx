@@ -4,7 +4,7 @@ import { getCookie } from "./utils/cookies";
 import { logout } from "../../service/userService";
 export const NavBar = () => {
     const isAuthenticated = getCookie('token') !== null;
-
+    const username = getCookie('username');
     const callLogout = () => {
         logout();
     }
@@ -35,7 +35,8 @@ export const NavBar = () => {
                             <a className="nav-link " href="register">Register</a>
                         </li>}
                         {isAuthenticated && <div className="dropstart">
-                            <button className="dropdown-toggle border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="dropdown-toggle border-0 bg-transparent d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                <p className='m-0'>{username}</p>
                                 <img src={IconUser} className="rounded-circle" height="35" alt="" loading="lazy" />
                             </button>
                             <ul className="dropdown-menu">

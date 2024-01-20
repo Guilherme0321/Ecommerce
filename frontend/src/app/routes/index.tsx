@@ -4,6 +4,7 @@ import { Register } from "../pages/register";
 import { Login } from "../pages/login";
 import { getCookie } from "../shared/components/utils/cookies";
 import { Products } from "../pages/products";
+import { Perfil } from "../pages/perfil";
 
 export const Routes = () => {
     const token = getCookie('token')
@@ -16,6 +17,7 @@ export const Routes = () => {
                 {!token && <Route path="/register" Component={() => <Register />} />}
                 {!token && <Route path="/login" Component={() => <Login />} />}
                 {token && <Route path="/products" Component={() => <Products />} />}
+                {token && <Route path="/perfil" Component={() => <Perfil />} />}
                 <Route path="*" Component={() => <Navigate to="/home" />} />
             </Switch>
         </BrowserRouter>

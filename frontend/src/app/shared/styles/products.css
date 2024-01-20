@@ -1,0 +1,7 @@
+.col {
+    transition: transform .1s;
+}
+
+.col:hover {
+    transform: scale(1.1);
+}

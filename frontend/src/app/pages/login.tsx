@@ -42,6 +42,7 @@ export const Login = () => {
         }else {
             tradeClassValidity(passwordRef, true);
             setCookie('token', response.token);
+            setCookie('username', response.username);
             window.location.reload();
             
         }

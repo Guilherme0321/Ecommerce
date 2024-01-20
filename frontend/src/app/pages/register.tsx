@@ -126,10 +126,9 @@ export const Register = () => {
             
             const res = await userService(user)
             console.log(res);
-            if (res.ok) {
-                console.log(res.user_id);
-                
+            if (res.ok) {                
                 setCookie('token', res.token);
+                setCookie('username', res.username);
                 window.location.reload();
             }else {
                 console.error(res);

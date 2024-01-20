@@ -16,6 +16,7 @@ export class UserController {
 
     logout = (req: Request, res: Response) => {
         res.clearCookie('token')
+        res.clearCookie('username');
         res.json({ ok: true, message: 'Logout bem-sucedido' });
     }
 
@@ -55,7 +56,7 @@ export class UserController {
         const user_id: number = await this.userService.getUserIdByUsername(req.body.username);
         if(insertedUser){
             const token = jwt.sign({user_id: user_id}, 'user_id', {expiresIn: '1d'});
-            res.json({ok: true, token});
+            res.json({ok: true, token, username: req.body.username});
         }else{
             res.json({error: 'Não foi possivel inserir esse usuário!'});
         }

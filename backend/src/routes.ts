@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "./controllers/UserController";
 import dbConfig from "./services/dbconfig";
-import { authId, authUser, authUserName, authUserQuery, authUserEmail, authenticateToken } from "./middlewares/validationUser";
+import { authId, authUser, authUserName, authUserQuery, authUserEmail, authenticateToken, authUpdate } from "./middlewares/validationUser";
 import { ProductController } from "./controllers/ProductController";
 import { OrderService } from "./services/OrderService";
 import { authProductQuery } from "./middlewares/validationProduct";
@@ -20,7 +20,7 @@ Routes.get('/users', usercontroller.getAllUsers);
 Routes.get('/user', authenticateToken, usercontroller.getUserById);
 Routes.delete('/user/delete', authId, usercontroller.deleteUserById);
 Routes.post('/user/insert', authUserQuery, usercontroller.insertUser);
-Routes.put('/user/update', authenticateToken, authUserQuery, usercontroller.updateUserById);
+Routes.put('/user/update', authenticateToken, authUpdate, usercontroller.updateUserById);
 Routes.post('/user/valid/username', authUserName);
 Routes.post('/user/authenticate', authUser);
 Routes.post('/user/valid/email', authUserEmail);

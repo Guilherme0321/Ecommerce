@@ -129,6 +129,24 @@ export const getInfoPerfil = async (token: string): Promise<any> => {
         return response;
     } catch (error) {
         console.error('Error in userService:', error);
-        return error;
     }
 }   
+
+export const uptadeUserData = async (username: string, email: string, name: string, phone: string, address: string, token: string): Promise<boolean | undefined> => {
+    const url: string = 'http://localhost:5000/user/update';
+    const newUser = {username, email, name, phone, address} as User;
+    try {
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(newUser),
+        });
+        const response = await res.json();
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}

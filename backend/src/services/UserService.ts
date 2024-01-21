@@ -79,12 +79,11 @@ export class UserService {
           address = $2,
           email = $3,
           phone = $4,
-          username = $5,
-          password = $6
-        WHERE user_id = $7
+          username = $5
+        WHERE user_id = $6
         ;`,
         [
-            newUser.name, newUser.address, newUser.email, newUser.phone, newUser.username, newUser.password, userId
+            newUser.name, newUser.address, newUser.email, newUser.phone, newUser.username, userId
         ])).rowCount !== 0;
     }
     /**

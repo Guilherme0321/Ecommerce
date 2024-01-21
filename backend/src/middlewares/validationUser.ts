@@ -3,6 +3,7 @@ import { authAddress, authEmail, authName, isJustNumbers } from "../utils/utils"
 import { UserService } from "../services/UserService";
 import dbConfig from "../services/dbconfig";
 import * as jwt from 'jsonwebtoken';
+import { User } from "../models/User";
 
 const userService: UserService = new UserService(dbConfig);
 
@@ -91,6 +92,27 @@ export const authUserQuery = async (req: Request, res: Response, next: NextFunct
 
     }else {
         res.json({error: 'Os atributos "name", "email", "address", "username", "password" não podem ser nulos e "username" não pode se repetir!'})
+    }
+}
+
+export const authUpdate = async (req: Request, res: Response, next: NextFunction) => {
+    const { name, address, email, username } = req.body;
+    const user: User = (await userService.getUserById(req.body.user_id))[0];    
+    if(name && address && email && username) {
+        const isValidAddress: boolean = authAddress(address.toString().split(','));
+        const isValidEmail: boolean = authEmail(email.toString());
+        const isValidName: boolean = authName(name.toString());
+        const isValidUsername: boolean = (await userService.validUserName(username.toString())) || user.username === username;
+        const isUniqueEmail: boolean = (await userService.validEmail(email.toString())) || user.email === email;
+
+        if(!isValidAddress) res.json({error:'Endereço invalido!', details:'O endereço deve ser Rua, Número, Cidade'});
+        else if(!isValidEmail) res.json({error:'Email invalido!'});
+        else if(!isValidName) res.json({error:'Nome invalido!', details:'Não pode haver números no nome!'});
+        else if(!isValidUsername) res.json({error:'Já existe um usuário com esse username!'});
+        else if(!isUniqueEmail) res.json({error:'Já existe um usuário com esse email!'});
+        else next();
+    }else {
+        res.json({error: 'Os atributos "name", "email", "address", "username", não podem ser nulos e "username" não pode se repetir!'});
     }
 }
 

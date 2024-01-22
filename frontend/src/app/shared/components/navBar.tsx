@@ -41,7 +41,7 @@ export const NavBar = () => {
                             </button>
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="perfil">Perfil</a></li>
-                                <li><a className="dropdown-item" href="perfil">Cart Items</a></li>
+                                <li><a className="dropdown-item" href="cartItems">Cart Items</a></li>
                                 <li><hr className="dropdown-divider" /></li>
                                 <li>
                                     <form className="dropdown-item d-flex align-items-center">

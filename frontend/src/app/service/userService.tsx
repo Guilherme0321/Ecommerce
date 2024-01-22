@@ -132,7 +132,7 @@ export const getInfoPerfil = async (token: string): Promise<any> => {
     }
 }   
 
-export const uptadeUserData = async (username: string, email: string, name: string, phone: string, address: string, token: string): Promise<boolean | undefined> => {
+export const updateUserData = async ({username, email, name, phone, address}: Partial<User>, token: string): Promise<boolean | undefined> => {
     const url: string = 'http://localhost:5000/user/update';
     const newUser = {username, email, name, phone, address} as User;
     try {
@@ -145,7 +145,7 @@ export const uptadeUserData = async (username: string, email: string, name: stri
             body: JSON.stringify(newUser),
         });
         const response = await res.json();
-        return response;
+        return response.ok;
     } catch (error) {
         console.error(error);
     }

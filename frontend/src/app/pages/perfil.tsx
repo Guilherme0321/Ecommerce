@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react"
-import { getInfoPerfil } from "../service/userService";
+import { ChangeEvent, useEffect, useState } from "react"
+import { getInfoPerfil, updateUserData } from "../service/userService";
 import { getCookie } from "../shared/components/utils/cookies";
 import { NavBar } from "../shared/components/navBar";
 import { User } from "../shared/types/user"
@@ -41,9 +41,19 @@ export const Perfil = () => {
             getInfoUser();
         }, [token]);
 
-    const hadleSUbmit = (e: FormDataEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        try {
+            if(token !== null) {
+                const res: boolean | undefined = await updateUserData(data, token);
+                if(res){
+                    window.location.reload();
+                }
+            }
+        }catch(error) {
+            console.error(error);
+            
+        }
     }
 
     return (
@@ -52,7 +62,7 @@ export const Perfil = () => {
             <section className="position-absolute top-50 start-50 translate-middle" id="bg" style={{width: '100%', height:'100%'}}>
                 <div className="position-absolute top-50 start-50 translate-middle bg-white rounded-4" style={{width:'25%'}}>
                     <fieldset className="m-2 position-relative d-flex justify-content-center flex-column">
-                        <form className="form-floating m-3 d-flex justify-content-center flex-column border border-black border-5 p-5 rounded-4">
+                        <form className="form-floating m-3 d-flex justify-content-center flex-column border border-black border-5 p-5 rounded-4" onSubmit={handleSubmit}>
                             <div className="mb-3">
                                 <label htmlFor='name' className="form-label">Name</label>
                                 <input type="text" id='name' onChange={handleChange} value={data.name} className="form-control" name="name" />

@@ -2,7 +2,7 @@ import { Variant } from "./Variant";
 
 // Produto
 export type Product = {
-    product_id: string | number,
+    product_id?: string | number,
     name: string,                 // Nome do produto
     description: string,          // Descrição do produto
     images: string[],             // URLs das imagens

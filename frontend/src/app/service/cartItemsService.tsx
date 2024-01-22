@@ -19,3 +19,24 @@ export const insertToCart = async (product_id: number, quantity: number, token: 
         return error;
     }
 }
+
+export const removeCart = async (product_id: number, quantity: number, token: string): Promise<boolean | undefined> => {
+    const url: string = 'http://localhost:5000/cart-items';
+
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({product_id: product_id, quantity:quantity})
+        });
+        if(!res.ok) {
+            throw new Error(`Erro na requisição: ${res.status} - ${res.statusText}`);
+        }
+        return (await res.json()).ok;
+    }catch (error) {
+        console.error('Error in userService:', error);
+    }
+}

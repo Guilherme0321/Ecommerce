@@ -60,7 +60,7 @@ export const Login = () => {
                                 <Input type='password' inputRef={passwordRef} labelText="Password" id='password' required={true} />
                                 <button id="submit" className="btn btn-outline-dark" type="submit">Submit</button>
                         </form>
-                        <h2 className="position-absolute top-0 bg-black text-white rounded-5 p-1 px-3" style={{left:'5vh'}}>Cadastro</h2>                
+                        <h2 className="position-absolute top-0 bg-black text-white rounded-5 p-1 px-3" style={{left:'5vh'}}>Login</h2>                
                     </fieldset>
                 </div>
             </section>

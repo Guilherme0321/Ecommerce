@@ -27,8 +27,8 @@ export class CartItemService {
         
         await Promise.all(cartItem.map(async (cart) => {
             if(cart.product_id !== undefined){
-                cart.product = (await this.productService.getProductById(cart.product_id))[0];
-                delete cart.product_id; // qualquer erro relacionado ao produto retirar isso
+                const { product_id, ...product } = (await this.productService.getProductById(cart.product_id))[0];
+                cart.product = product;
             }
         }));
         return cartItem.flat();

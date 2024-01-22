@@ -60,9 +60,9 @@ export const CartItems = () => {
     return (
         <>
             <NavBar />
-            <section className="position-absolute top-50 start-50 translate-middle" style={{width: '100%', height:'100%'}}>
-                <div className="position-absolute top-50 start-50 translate-middle bg-white rounded-4">
-                    <div className="">
+            <section className="my-5">
+                <div className="bg-white rounded-4 d-flex flex-wrap flex-column align-items-center">
+                    <div className="" style={{height:'93vh', overflowY: 'scroll'}}>
                         <table className="table align-middle">
                             <thead>
                                 <tr>

@@ -34,7 +34,10 @@ export class UserService {
 
     private setCart_Items = async (users: User[]): Promise<User[]> => {
         await Promise.all(users.map(async (user) => {
-            user.cart = await this.cartService.getCartItemByUserId(user.user_id);
+            user.cart = (await this.cartService.getCartItemByUserId(user.user_id)).map(cart => {
+                const { cart_item_id, user_id, ...cartItem } = cart;
+                return cartItem;
+            });
         }));
         return users;
     }

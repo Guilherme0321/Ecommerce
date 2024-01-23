@@ -61,47 +61,59 @@ export const CartItems = () => {
         <>
             <NavBar />
             <section className="my-5">
-                <div className="bg-white rounded-4 d-flex flex-wrap flex-column align-items-center">
-                    <div className="" style={{height:'93vh', overflowY: 'scroll'}}>
-                        <table className="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th scope="col" colSpan={4}>Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {!loading && data.map(cart => (
-                                    <tr key={cart.product_id}>
-                                        <td className="align-middle" colSpan={4}>
-                                            <div className="d-flex flex-row gap-1">
-                                                <img src={cart.product?.images[0]} alt="cartImage" />
-                                                <div className="d-flex flex-column align-items-center">
-                                                    <h5>{cart.product?.name}</h5>
-                                                    <div className="d-flex flex-row gap-1">    
-                                                        {cart.product?.categories.map(category => (
-                                                            <p key={category}>{category}</p>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="align-middle">{cart.product?.price}</td>
-                                        <td className="align-middle">{cart.quantity}</td>
-                                        <td className="align-middle">{(cart.product?.price) ? cart.quantity * cart.product?.price : cart.product?.price}</td>
-                                        <td className="align-middle">
-                                            <button className="border-0 bg-transparent" onClick={() => {handleClick(cart.product_id, cart.quantity)}}>
-                                                <img src={trash} className="rounded-circle" height="35" alt="" loading="lazy" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="bg-light rounded-4 p-4">
+                <div className="table-container" style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
+                    <table className="table table-hover">
+                    <thead>
+                        <tr>
+                        <th scope="col" colSpan={4}>Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!loading && data.map(cart => (
+                        <tr key={cart.product_id}>
+                            <td className="align-middle" colSpan={4}>
+                            <div className="d-flex flex-row gap-2">
+                                <img src={cart.product?.images[0]} alt="cartImage" className="product-image" />
+                                <div className="d-flex flex-column align-items-start">
+                                <h6>{cart.product?.name}</h6>
+                                <div className="d-flex flex-row gap-1">
+                                    {cart.product?.categories.map(category => (
+                                    <p key={category}>{category}</p>
+                                    ))}
+                                </div>
+                                </div>
+                            </div>
+                            </td>
+                            <td className="align-middle">${cart.product?.price}</td>
+                            <td className="align-middle">{cart.quantity}</td>
+                            <td className="align-middle">${(cart.product?.price) ? (cart.quantity * cart.product?.price).toFixed(2) : cart.product?.price.toFixed(2)}</td>
+                            <td className="align-middle">
+                            <button className="btn btn-link" onClick={() => { handleClick(cart.product_id, cart.quantity) }}>
+                                <img src={trash} className="rounded-circle" height="25" alt="" loading="lazy" />
+                            </button>
+                            </td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </section>
+            <section className="my-5">
+                <div className="bg-primary text-light rounded-4 p-4">
+                <h2 className="mb-4">Finalizar Pedido</h2>
+                <div className="d-flex flex-column align-items-start">
+                    <p>1. Verifique seus itens no carrinho.</p>
+                    <p>2. Clique em "Finalizar Pedido".</p>
+                    <p>3. Preencha as informações de entrega.</p>
+                    <p>4. Escolha o método de pagamento.</p>
+                    <a className="btn btn-light mt-3" href="/cartItems/checkout">Finalizar Pedido</a>
+                </div>
                 </div>
             </section>
         </>

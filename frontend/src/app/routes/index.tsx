@@ -6,6 +6,7 @@ import { getCookie } from "../shared/components/utils/cookies";
 import { Products } from "../pages/products";
 import { Perfil } from "../pages/perfil";
 import { CartItems } from "../pages/cartItems";
+import { Checkout } from "../pages/checkout";
 
 export const Routes = () => {
     const token = getCookie('token')
@@ -20,6 +21,7 @@ export const Routes = () => {
                 {token && <Route path="/products" Component={() => <Products />} />}
                 {token && <Route path="/perfil" Component={() => <Perfil />} />}
                 {token && <Route path="/cartItems" Component={() => <CartItems />} />}
+                {token && <Route path="/cartItems/checkout" Component={() => <Checkout />} />}
                 <Route path="*" Component={() => <Navigate to="/home" />} />
             </Switch>
         </BrowserRouter>

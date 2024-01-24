@@ -1,7 +1,34 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { getCookie } from '../shared/components/utils/cookies';
+import { CartItem } from '../shared/types/cartItems';
+import { getInfoPerfil } from '../service/userService';
 
 export const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('creditCard');
+
+  const [data, setData] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const token: string | null = getCookie('token');
+
+  useEffect(() => {
+      const getInfoUser = async () => {
+          try {
+              if (token !== null) {
+                  const res = (await getInfoPerfil(token))[0];         
+                  setData(res.cart);
+              } else {
+                  console.log('Token inválido!');
+              }
+          } catch (error) {
+              console.error(error);
+          } finally {
+              setLoading(false);
+          }
+      };
+  
+      getInfoUser();
+  },[token]);
 
   const handlePaymentMethodChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setPaymentMethod(event.target.value);
@@ -61,6 +88,9 @@ export const Checkout = () => {
         <div className="col-md-4">
           <div className="bg-white rounded-4 p-4">
             <h2 className="mb-4">Resumo do Pedido</h2>
+            {!loading && data.map(cart => (
+              <p key={cart.product?.name}>{cart.product?.name}</p>
+            ))}
           </div>
         </div>
       </div>

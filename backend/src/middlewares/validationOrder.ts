@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 export const isValidInsertionOrder = (req: Request, res: Response, next: NextFunction) => {
+    req.body.customer_id = req.body.user_id;
     const { customer_id, shipping_address, status } = req.body;
     if(customer_id === undefined) {
         res.json({ok: false, error: 'Id do usuário é nulo!'});

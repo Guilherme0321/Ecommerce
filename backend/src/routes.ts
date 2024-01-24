@@ -32,8 +32,8 @@ Routes.delete('/product', authId, productcontroller.deleteProductById);
 Routes.post('/product', authProductQuery, productcontroller.insertProduct);
 Routes.put('/product', authId, authProductQuery, productcontroller.updateProductById);
 
-Routes.post('/orders', isValidInsertionOrder, orderController.insertOrder);
-Routes.delete('/orders', validOrderId, orderController.deleteOrderById);
+Routes.post('/orders', authenticateToken, isValidInsertionOrder, orderController.insertOrder);
+Routes.delete('/orders', authenticateToken, validOrderId, orderController.deleteOrderById);
 
 Routes.post('/cart-items', authenticateToken, isValidCartItem, cartItemsController.insertCartItem);
 Routes.delete('/cart-items', authenticateToken, isValidCartItem, cartItemsController.deleteCartItemById);
